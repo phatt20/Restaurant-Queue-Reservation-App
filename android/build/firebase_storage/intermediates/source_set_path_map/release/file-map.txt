@@ -1,0 +1,16 @@
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-play-services-base-18.1.0-0 C:\Users\phatt\.gradle\caches\transforms-3\5b80a1cbea9f1e91ccfe5e70bc3c1328\transformed\jetified-play-services-base-18.1.0\res
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-window-1.0.0-beta04-1 C:\Users\phatt\.gradle\caches\transforms-3\604fb15b30f97a6932bceb304fd4fc6d\transformed\jetified-window-1.0.0-beta04\res
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-play-services-basement-18.3.0-2 C:\Users\phatt\.gradle\caches\transforms-3\6e3cd143ffe9a4d242400aa38a2113cb\transformed\jetified-play-services-basement-18.3.0\res
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-annotation-experimental-1.1.0-3 C:\Users\phatt\.gradle\caches\transforms-3\7ca33219d5b5b3d673277779faf85eda\transformed\jetified-annotation-experimental-1.1.0\res
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-firebase-common-20.4.3-4 C:\Users\phatt\.gradle\caches\transforms-3\83c0d74472ca479961cd714058edaac1\transformed\jetified-firebase-common-20.4.3\res
+io.flutter.plugins.firebase.storage.firebase_storage-core-1.6.0-5 C:\Users\phatt\.gradle\caches\transforms-3\8791e558aa17d8600a46ff278b7406d5\transformed\core-1.6.0\res
+io.flutter.plugins.firebase.storage.firebase_storage-jetified-window-java-1.0.0-beta04-6 C:\Users\phatt\.gradle\caches\transforms-3\b0bba8b31704997801b8182cefd6e1e3\transformed\jetified-window-java-1.0.0-beta04\res
+io.flutter.plugins.firebase.storage.firebase_storage-main-7 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-11.7.7\android\src\main\res
+io.flutter.plugins.firebase.storage.firebase_storage-release-8 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-11.7.7\android\src\release\res
+io.flutter.plugins.firebase.storage.firebase_storage-packaged_res-9 X:\learning\Allmyapp\chat\android\build\firebase_core\intermediates\packaged_res\release
+io.flutter.plugins.firebase.storage.firebase_storage-pngs-10 X:\learning\Allmyapp\chat\android\build\firebase_storage\generated\res\pngs\release
+io.flutter.plugins.firebase.storage.firebase_storage-resValues-11 X:\learning\Allmyapp\chat\android\build\firebase_storage\generated\res\resValues\release
+io.flutter.plugins.firebase.storage.firebase_storage-rs-12 X:\learning\Allmyapp\chat\android\build\firebase_storage\generated\res\rs\release
+io.flutter.plugins.firebase.storage.firebase_storage-mergeReleaseResources-13 X:\learning\Allmyapp\chat\android\build\firebase_storage\intermediates\incremental\release\mergeReleaseResources\merged.dir
+io.flutter.plugins.firebase.storage.firebase_storage-mergeReleaseResources-14 X:\learning\Allmyapp\chat\android\build\firebase_storage\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+io.flutter.plugins.firebase.storage.firebase_storage-merged_res-15 X:\learning\Allmyapp\chat\android\build\firebase_storage\intermediates\merged_res\release

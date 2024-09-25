@@ -1,0 +1,14 @@
+io.flutter.plugins.firebase.core.firebase_core-jetified-window-1.0.0-beta04-0 C:\Users\phatt\.gradle\caches\transforms-3\604fb15b30f97a6932bceb304fd4fc6d\transformed\jetified-window-1.0.0-beta04\res
+io.flutter.plugins.firebase.core.firebase_core-jetified-play-services-basement-18.3.0-1 C:\Users\phatt\.gradle\caches\transforms-3\6e3cd143ffe9a4d242400aa38a2113cb\transformed\jetified-play-services-basement-18.3.0\res
+io.flutter.plugins.firebase.core.firebase_core-jetified-annotation-experimental-1.1.0-2 C:\Users\phatt\.gradle\caches\transforms-3\7ca33219d5b5b3d673277779faf85eda\transformed\jetified-annotation-experimental-1.1.0\res
+io.flutter.plugins.firebase.core.firebase_core-jetified-firebase-common-20.4.3-3 C:\Users\phatt\.gradle\caches\transforms-3\83c0d74472ca479961cd714058edaac1\transformed\jetified-firebase-common-20.4.3\res
+io.flutter.plugins.firebase.core.firebase_core-core-1.6.0-4 C:\Users\phatt\.gradle\caches\transforms-3\8791e558aa17d8600a46ff278b7406d5\transformed\core-1.6.0\res
+io.flutter.plugins.firebase.core.firebase_core-jetified-window-java-1.0.0-beta04-5 C:\Users\phatt\.gradle\caches\transforms-3\b0bba8b31704997801b8182cefd6e1e3\transformed\jetified-window-java-1.0.0-beta04\res
+io.flutter.plugins.firebase.core.firebase_core-main-6 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-2.32.0\android\src\main\res
+io.flutter.plugins.firebase.core.firebase_core-release-7 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-2.32.0\android\src\release\res
+io.flutter.plugins.firebase.core.firebase_core-pngs-8 X:\learning\Allmyapp\chat\android\build\firebase_core\generated\res\pngs\release
+io.flutter.plugins.firebase.core.firebase_core-resValues-9 X:\learning\Allmyapp\chat\android\build\firebase_core\generated\res\resValues\release
+io.flutter.plugins.firebase.core.firebase_core-rs-10 X:\learning\Allmyapp\chat\android\build\firebase_core\generated\res\rs\release
+io.flutter.plugins.firebase.core.firebase_core-mergeReleaseResources-11 X:\learning\Allmyapp\chat\android\build\firebase_core\intermediates\incremental\release\mergeReleaseResources\merged.dir
+io.flutter.plugins.firebase.core.firebase_core-mergeReleaseResources-12 X:\learning\Allmyapp\chat\android\build\firebase_core\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+io.flutter.plugins.firebase.core.firebase_core-merged_res-13 X:\learning\Allmyapp\chat\android\build\firebase_core\intermediates\merged_res\release

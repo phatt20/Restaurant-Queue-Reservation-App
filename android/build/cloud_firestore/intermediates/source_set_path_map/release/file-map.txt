@@ -1,0 +1,16 @@
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-window-1.0.0-beta04-0 C:\Users\phatt\.gradle\caches\transforms-3\604fb15b30f97a6932bceb304fd4fc6d\transformed\jetified-window-1.0.0-beta04\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-play-services-basement-18.3.0-1 C:\Users\phatt\.gradle\caches\transforms-3\6e3cd143ffe9a4d242400aa38a2113cb\transformed\jetified-play-services-basement-18.3.0\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-annotation-experimental-1.1.0-2 C:\Users\phatt\.gradle\caches\transforms-3\7ca33219d5b5b3d673277779faf85eda\transformed\jetified-annotation-experimental-1.1.0\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-firebase-common-20.4.3-3 C:\Users\phatt\.gradle\caches\transforms-3\83c0d74472ca479961cd714058edaac1\transformed\jetified-firebase-common-20.4.3\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-core-1.6.0-4 C:\Users\phatt\.gradle\caches\transforms-3\8791e558aa17d8600a46ff278b7406d5\transformed\core-1.6.0\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-window-java-1.0.0-beta04-5 C:\Users\phatt\.gradle\caches\transforms-3\b0bba8b31704997801b8182cefd6e1e3\transformed\jetified-window-java-1.0.0-beta04\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-jetified-play-services-base-18.0.1-6 C:\Users\phatt\.gradle\caches\transforms-3\e4e87ffcee20cc5a86aeeeb517c3bd90\transformed\jetified-play-services-base-18.0.1\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-main-7 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-4.17.5\android\src\main\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-release-8 C:\Users\phatt\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-4.17.5\android\src\release\res
+io.flutter.plugins.firebase.firestore.cloud_firestore-pngs-9 X:\learning\Allmyapp\chat\android\build\cloud_firestore\generated\res\pngs\release
+io.flutter.plugins.firebase.firestore.cloud_firestore-resValues-10 X:\learning\Allmyapp\chat\android\build\cloud_firestore\generated\res\resValues\release
+io.flutter.plugins.firebase.firestore.cloud_firestore-rs-11 X:\learning\Allmyapp\chat\android\build\cloud_firestore\generated\res\rs\release
+io.flutter.plugins.firebase.firestore.cloud_firestore-mergeReleaseResources-12 X:\learning\Allmyapp\chat\android\build\cloud_firestore\intermediates\incremental\release\mergeReleaseResources\merged.dir
+io.flutter.plugins.firebase.firestore.cloud_firestore-mergeReleaseResources-13 X:\learning\Allmyapp\chat\android\build\cloud_firestore\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+io.flutter.plugins.firebase.firestore.cloud_firestore-merged_res-14 X:\learning\Allmyapp\chat\android\build\cloud_firestore\intermediates\merged_res\release
+io.flutter.plugins.firebase.firestore.cloud_firestore-packaged_res-15 X:\learning\Allmyapp\chat\android\build\firebase_core\intermediates\packaged_res\release

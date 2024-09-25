@@ -1,0 +1,4 @@
+#Sat Aug 17 07:35:36 ICT 2024
+base.0=X\:\\learning\\Allmyapp\\chat\\android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
