@@ -1,3 +1,6 @@
+import 'package:chat/screens/billing/billingScreen.dart';
+import 'package:chat/screens/billing/information.dart';
+import 'package:chat/screens/billing/userMangement.dart';
 import 'package:chat/screens/profile/EditOrofileScreen.dart';
 import 'package:chat/screens/profile/list_title.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,7 +92,6 @@ class _ProfileState extends State<Profile> {
                   return Column(
                     children: [
                       const SizedBox(height: 45),
-                      
                       SizedBox(
                         width: 130,
                         height: 130,
@@ -143,18 +145,12 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 10),
               ListTitle(
                 endIcon: true,
-                ontap: () {},
-                leadingIcon: LineAwesomeIcons.cog_solid,
-                leadingIconColor: Colors.blueAccent,
-                trailingIcon: LineAwesomeIcons.angle_right_solid,
-                trailingIconColor: Colors.grey,
-                title: "Setting",
-                backgroundColor: Colors.blueAccent.withOpacity(0.1),
-              ),
-              const SizedBox(height: 10),
-              ListTitle(
-                endIcon: true,
-                ontap: () {},
+                ontap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BillScreen()),
+                  );
+                },
                 leadingIcon: LineAwesomeIcons.wallet_solid,
                 leadingIconColor: Colors.blueAccent,
                 trailingIcon: LineAwesomeIcons.angle_right_solid,
@@ -165,7 +161,13 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 10),
               ListTitle(
                 endIcon: true,
-                ontap: () {},
+                ontap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const UserManagementScreen()),
+                  );
+                },
                 leadingIcon: LineAwesomeIcons.user_check_solid,
                 leadingIconColor: Colors.blueAccent,
                 trailingIcon: LineAwesomeIcons.angle_right_solid,
@@ -176,7 +178,13 @@ class _ProfileState extends State<Profile> {
               const SizedBox(height: 10),
               ListTitle(
                 endIcon: true,
-                ontap: () {},
+                ontap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const InformationScreen()),
+                  );
+                },
                 leadingIcon: LineAwesomeIcons.info_solid,
                 leadingIconColor: Colors.blueAccent,
                 trailingIcon: LineAwesomeIcons.angle_right_solid,

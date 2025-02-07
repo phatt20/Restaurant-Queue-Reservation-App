@@ -1,5 +1,3 @@
-import 'package:chat/screens/foodmenu.dart/foodmenu.dart';
-import 'package:chat/screens/home/buttoncustom.dart';
 import 'package:chat/screens/home/categori.dart';
 import 'package:chat/screens/home/home_list_slider.dart';
 import 'package:chat/screens/popular/popularscreen.dart';
@@ -259,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             _sliderUI(),
-            _viewResButton(_animationController),
+            // _viewResButton(_animationController),
           ],
         ),
       ),
@@ -295,37 +293,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _viewResButton(AnimationController animationController) {
-    return AnimatedBuilder(
-      animation: animationController,
-      builder: (BuildContext context, Widget? child) {
-        var opacity = 1.0 -
-            (animationController.value > 0.64
-                ? 1.0
-                : animationController.value);
-        return Positioned(
-          left: 20,
-          right: 250,
-          top: 210,
-          height: sliderImageHeight * (1.0 - animationController.value),
-          child: Opacity(
-            opacity: opacity,
-            child: Align(
-              alignment: Alignment.center,
-              child: CustomButton(
-                text: 'Visit',
-                backgroundColor: Colors.blueAccent,
-                textColor: Colors.white,
-                width: 100,
-                height: 40,
-                onPressed: () {},
-                textStyle: null,
-                minWidth: 100,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget _viewResButton(AnimationController animationController) {
+  //   return AnimatedBuilder(
+  //     animation: animationController,
+  //     builder: (BuildContext context, Widget? child) {
+  //       var opacity = 1.0 -
+  //           (animationController.value > 0.64
+  //               ? 1.0
+  //               : animationController.value);
+  //       return Positioned(
+  //         left: 20,
+  //         right: 250,
+  //         top: 210,
+  //         height: sliderImageHeight * (1.0 - animationController.value),
+  //         child: Opacity(
+  //           opacity: opacity,
+  //           child: Align(
+  //             alignment: Alignment.center,
+  //             child: CustomButton(
+  //               text: 'Visit',
+  //               backgroundColor: Colors.blueAccent,
+  //               textColor: Colors.white,
+  //               width: 100,
+  //               height: 40,
+  //               onPressed: () {},
+  //               textStyle: null,
+  //               minWidth: 100,
+
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

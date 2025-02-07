@@ -21,7 +21,6 @@ class _QueueState extends State<QueueTest> {
   @override
   void initState() {
     super.initState();
-    _getCurrentQueueNumber();
   }
 
   void _getCurrentQueueNumber() async {
@@ -43,7 +42,14 @@ class _QueueState extends State<QueueTest> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm $action'),
+          title: Text(
+            'Confirm $action',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black87,
+            ),
+          ),
           content: _isLoading
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -58,7 +64,14 @@ class _QueueState extends State<QueueTest> {
                       fit: BoxFit.cover,
                     ),
                     const SizedBox(height: 16),
-                    Text('Are you sure you want to $action the reservation?'),
+                    Text(
+                      'Are you sure you want to $action the reservation?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
           actions: <Widget>[
@@ -66,7 +79,13 @@ class _QueueState extends State<QueueTest> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: _isLoading
@@ -82,7 +101,10 @@ class _QueueState extends State<QueueTest> {
                         _isLoading = false;
                       });
                     },
-              child: const Text('Confirm'),
+              child: const Text(
+                'Confirm',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         );
@@ -171,7 +193,7 @@ class _QueueState extends State<QueueTest> {
   Widget build(BuildContext context) {
     // Replace this with your restaurant avatar image URL
     String restaurantImageUrl =
-        'https://image.posttoday.com/media/content/2018/08/03/989D15137C1C478393F3625E158EFEAF.jpg';
+        'https://static.vecteezy.com/vite/assets/photo-masthead-375-b8ae1548.webp';
 
     return Scaffold(
       appBar: AppBar(
@@ -190,7 +212,7 @@ class _QueueState extends State<QueueTest> {
               ),
               const SizedBox(height: 25),
               Text(
-                'คิวของคุณคือ: $_currentQueueNumber',
+                '',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

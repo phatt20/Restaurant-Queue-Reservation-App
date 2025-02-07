@@ -17,7 +17,8 @@ class CustomButton extends StatelessWidget {
     required this.height,
     required this.onPressed,
     this.textStyle,
-    required this.minWidth, required int width,
+    required this.minWidth,
+    required int width,
   });
 
   @override

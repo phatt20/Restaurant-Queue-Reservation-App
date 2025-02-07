@@ -42,7 +42,10 @@ class _SmoothPageIndicatorState extends State<SmoothPageIndicator> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
         widget.count,
-        (index) => buildDot(index: index),
+        (index) => Flexible(
+          // เพิ่ม Flexible ที่นี่
+          child: buildDot(index: index),
+        ),
       ),
     );
   }
