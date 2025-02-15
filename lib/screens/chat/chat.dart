@@ -1,12 +1,10 @@
 import 'package:chat/screens/chat/chat_message.dart';
 import 'package:chat/screens/chat/new_message.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  final AnimationController? animationController;
-  const ChatScreen({super.key, this.animationController});
+  const ChatScreen({super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();

@@ -1,6 +1,7 @@
 import 'package:chat/screens/List/listscreen.dart';
 import 'package:chat/screens/bottom_tap/components/tapbutton_ui.dart';
 import 'package:chat/screens/chat/chat.dart';
+import 'package:chat/screens/chat/chatlist.dart';
 import 'package:chat/screens/home/homescreen.dart';
 import 'package:chat/screens/profile/profile.dart';
 import 'package:chat/widgets/common_card.dart';
@@ -184,9 +185,9 @@ class _BottomTapscreen extends State<BottomTapscreen>
       });
     } else if (tabType == BottomBarType.chat) {
       setState(() {
-        _indexView = ChatScreen(
-          animationController: _animationController,
-        );
+        _indexView = ChatListScreen(
+            // animationController: _animationController,
+            );
       });
     } else if (tabType == BottomBarType.profile) {
       setState(() {
