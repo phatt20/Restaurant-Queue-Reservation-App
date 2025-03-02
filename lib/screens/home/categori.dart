@@ -6,12 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 class ImageSlider extends StatelessWidget {
   final List<FoodDtail> data;
   final List<Restaurants> resdata;
+  final String name;
 
-  const ImageSlider({
-    required this.data,
-    super.key,
-    required this.resdata,
-  });
+  const ImageSlider(
+      {required this.data,
+      super.key,
+      required this.resdata,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +100,7 @@ class ImageSlider extends StatelessWidget {
                             builder: (context) => Restaurantsdetail(
                               resdata: resdata[0],
                               fooddata: data[index],
+                              name: name,
                             ),
                           ),
                         );

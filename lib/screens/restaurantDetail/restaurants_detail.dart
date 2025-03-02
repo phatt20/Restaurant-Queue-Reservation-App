@@ -11,9 +11,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Restaurantsdetail extends StatefulWidget {
   const Restaurantsdetail(
-      {super.key, required this.resdata, required this.fooddata});
+      {super.key,
+      required this.resdata,
+      required this.fooddata,
+      required this.name});
 
   final Restaurants resdata;
+  final String name;
+
   final FoodDtail fooddata;
   @override
   State<Restaurantsdetail> createState() => _RestaurantsdetailState();
@@ -107,6 +112,7 @@ class _RestaurantsdetailState extends State<Restaurantsdetail>
                     restData: widget.resdata,
                     animationController: animationController,
                     fooddata: widget.fooddata,
+                    name: widget.name,
                   ),
                 ),
               ],
@@ -270,7 +276,10 @@ class _RestaurantsdetailState extends State<Restaurantsdetail>
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          const QueueTest(),
+                                                          QueueTest(
+                                                        restaurantName:
+                                                            widget.name,
+                                                      ),
                                                     ),
                                                   );
                                                 },

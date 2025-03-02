@@ -13,13 +13,17 @@ class BillScreen extends StatelessWidget {
         .collection('history')
         .snapshots()
         .map((querySnapshot) {
+      if (querySnapshot.docs.isEmpty) {
+        return [];
+      }
       return querySnapshot.docs.map((doc) {
         return {
-          'guestCount': doc['guestCount'],
-          'queueNumber': doc['queueNumber'],
-          'timestamp': doc['timestamp'].toDate(),
-          'userId': doc['userId'],
-          'username': doc['username'],
+          'guestCount': doc['guestCount'] ?? 0, // ตรวจสอบค่า default
+          'timestamp': doc['timestamp']?.toDate() ??
+              DateTime.now(), // ตรวจสอบค่า default
+          'userId': doc['userId'] ?? '', // ตรวจสอบค่า default
+          'restaurantName':
+              doc['restaurantName'] ?? 'ไม่ทราบชื่อร้าน', // ตรวจสอบค่า default
           'status': 'failed', // Mock สถานะ "failed" สำหรับทุกการจอง
         };
       }).toList();
@@ -56,12 +60,12 @@ class BillScreen extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              debugPrint("Error: ${snapshot.error}"); // เพิ่มการพิมพ์ข้อผิดพลาด
               return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text('ไม่มีประวัติการจองที่ยกเลิก'));
             } else {
               final bookings = snapshot.data!;
-
               return ListView.builder(
                 itemCount: bookings.length,
                 itemBuilder: (context, index) {
@@ -87,7 +91,7 @@ class BillScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'ผู้ใช้งาน: ${booking['username']}',
+                                  'ร้าน: ${booking['restaurantName']}',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -106,14 +110,6 @@ class BillScreen extends StatelessWidget {
                             const SizedBox(height: 12),
                             Text(
                               'จำนวนผู้เข้าร่วม: ${booking['guestCount']} คน',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'หมายเลขคิว: ${booking['queueNumber']}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black54,

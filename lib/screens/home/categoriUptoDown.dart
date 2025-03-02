@@ -10,14 +10,15 @@ class Categoriuptodown extends StatelessWidget {
 
   final List<FoodDtail> fooddata;
   final bool isHotDeal;
+  final String name;
 
-  const Categoriuptodown({
-    super.key,
-    required this.data,
-    required this.isHotDeal,
-    required this.fooddata,
-    required this.resdetail,
-  });
+  const Categoriuptodown(
+      {super.key,
+      required this.data,
+      required this.isHotDeal,
+      required this.fooddata,
+      required this.resdetail,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,7 @@ class Categoriuptodown extends StatelessWidget {
                           builder: (context) => Restaurantsdetail(
                             resdata: data[index],
                             fooddata: fooddata[index],
+                            name: name,
                           ),
                         ),
                       );

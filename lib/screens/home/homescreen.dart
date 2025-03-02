@@ -204,16 +204,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           animation: animation,
                           click: () {},
                           textColor: Colors.black,
+                          name: "popularRes",
                         );
                       } else if (index == 1) {
                         return ImageSlider(
                           data: popularList,
                           resdata: detailRes,
+                          name: "popularRes",
                         );
                       } else if (index == 3) {
                         return ImageSlider(
                           data: sweetmenu,
                           resdata: detailRes,
+                          name: "sweetmenuRes",
                         );
                       } else if (index == 2) {
                         return TitleView(
@@ -226,28 +229,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           textColor: Colors.black,
                           fooddata: sweetmenu,
                           data: detailRes,
+                          name: "sweetmenuRes",
                           screen: PopularScreen(
-                              data: detailRes, fooddata: sweetmenu),
+                            data: detailRes,
+                            fooddata: sweetmenu,
+                            name: 'sweetmenuRes',
+                          ),
                         );
                       } else if (index == 4) {
                         return TitleView(
-                          img:
-                              'https://pbs.twimg.com/profile_images/1356986201610178560/xi2tcS2V_400x400.jpg',
-                          titleText: 'Best Deals',
-                          animationController: _animationController,
-                          animation: animation,
-                          click: () {},
-                          textColor: Colors.black,
-                          fooddata: popularList,
-                          data: detailRes,
-                        );
+                            img:
+                                'https://pbs.twimg.com/profile_images/1356986201610178560/xi2tcS2V_400x400.jpg',
+                            titleText: 'Best Deals',
+                            animationController: _animationController,
+                            animation: animation,
+                            click: () {},
+                            textColor: Colors.black,
+                            fooddata: popularList,
+                            data: detailRes,
+                            name: "BestDealsRes");
                       } else if (index == 5) {
                         return Categoriuptodown(
-                          fooddata: popularList,
-                          isHotDeal: true,
-                          data: bestdeal,
-                          resdetail: detailRes,
-                        );
+                            fooddata: popularList,
+                            isHotDeal: true,
+                            data: bestdeal,
+                            resdetail: detailRes,
+                            name: "BestDealsRes");
                       }
 
                       return const SizedBox.shrink();

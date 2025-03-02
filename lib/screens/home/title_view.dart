@@ -6,6 +6,7 @@ import 'package:chat/models/restaurants.dart';
 class TitleView extends StatelessWidget {
   final List<Restaurants>? data;
   final List<FoodDtail>? fooddata;
+  final String name;
 
   final String titleText, subtext;
   final AnimationController animationController;
@@ -15,19 +16,19 @@ class TitleView extends StatelessWidget {
   final String? img;
   final Widget? screen;
 
-  const TitleView({
-    super.key,
-    this.titleText = '',
-    this.subtext = '',
-    required this.animationController,
-    required this.animation,
-    required this.click,
-    required this.textColor,
-    this.img,
-    this.data,
-    this.fooddata,
-    this.screen,
-  });
+  const TitleView(
+      {super.key,
+      this.titleText = '',
+      this.subtext = '',
+      required this.animationController,
+      required this.animation,
+      required this.click,
+      required this.textColor,
+      this.img,
+      this.data,
+      this.fooddata,
+      this.screen,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +96,7 @@ class TitleView extends StatelessWidget {
                                       data: data!,
                                       titleTxt: titleText,
                                       fooddata: fooddata!,
+                                      name: name,
                                     ),
                               ),
                             );

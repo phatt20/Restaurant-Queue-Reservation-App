@@ -8,13 +8,14 @@ class PopularScreen extends StatefulWidget {
   final List<Restaurants> data;
   final List<FoodDtail> fooddata;
   final String titleTxt;
+  final String name;
 
-  const PopularScreen({
-    super.key,
-    required this.data,
-    this.titleTxt = '',
-    required this.fooddata,
-  });
+  const PopularScreen(
+      {super.key,
+      required this.data,
+      this.titleTxt = '',
+      required this.fooddata,
+      required this.name});
 
   @override
   _PopularScreenState createState() => _PopularScreenState();
@@ -123,6 +124,7 @@ class _PopularScreenState extends State<PopularScreen>
                   isHotDeal: true,
                   fooddata: widget.fooddata,
                   resdetail: widget.data,
+                  name: widget.name,
                 ),
               ],
             ),

@@ -88,13 +88,6 @@ class _ListscreenState extends State<Listscreen> {
                           color: Colors.deepOrange,
                         ),
                       ),
-                      subtitle: Text(
-                        "คิวที่: $queueNumber",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
-                      ),
                       trailing: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
@@ -149,7 +142,6 @@ class _ListscreenState extends State<Listscreen> {
       BuildContext context, Map<String, dynamic> data, String reservationId) {
     String restaurantName = data['restaurantName'] ?? "MAC";
     String status = data['status'] ?? "Waiting";
-    int queueNumber = data['queueNumber'] ?? 0;
     int guestCount = data['guestCount'] ?? 0;
     String timestamp = data['timestamp']?.toDate().toString() ?? "ไม่ทราบเวลา";
     String userId = data['userId'] ?? "ไม่ระบุ";
@@ -185,9 +177,6 @@ class _ListscreenState extends State<Listscreen> {
                   Text("ร้าน: $restaurantName",
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
-                  Text("คิวที่: $queueNumber",
-                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 12),
                   Text(
                     "สถานะ: $status",

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QueueTest extends StatefulWidget {
-  const QueueTest({Key? key}) : super(key: key);
+  final String restaurantName; // รับชื่อร้านเป็น constructor parameter
+  const QueueTest({Key? key, required this.restaurantName}) : super(key: key);
 
   @override
   State<QueueTest> createState() => _QueueState();
@@ -12,266 +13,167 @@ class QueueTest extends StatefulWidget {
 class _QueueState extends State<QueueTest> {
   final _formKey = GlobalKey<FormState>();
   int? _guestCount;
-  bool _isLoading = false; // Loading state
-  int _currentQueueNumber = 0; // Current queue number
+  DateTime? _selectedDateTime;
+  bool _isLoading = false;
 
-  // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _getCurrentQueueNumber() async {
-    try {
-      QuerySnapshot queueSnapshot = await _firestore.collection('Queue').get();
-      int currentQueueCount = queueSnapshot.docs.length;
-      setState(() {
-        _currentQueueNumber = currentQueueCount + 1;
-      });
-    } catch (e) {
-      print('Error fetching current queue number: $e');
-    }
-  }
-
-  void _showConfirmationDialog(
-      String action, VoidCallback onConfirm, String restaurantImageUrl) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Confirm $action',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.black87,
-            ),
-          ),
-          content: _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Image.network(
-                      restaurantImageUrl,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Are you sure you want to $action the reservation?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: _isLoading
-                  ? null
-                  : () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      Navigator.of(context).pop();
-                      onConfirm();
-                      await _addToQueue();
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    },
-              child: const Text(
-                'Confirm',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _addToQueue() async {
     try {
-      var now = DateTime.now();
+      if (_selectedDateTime == null || _guestCount == null) {
+        throw Exception("Please select a date, time, and guest count");
+      }
 
       final user = FirebaseAuth.instance.currentUser!;
-      final userDataSnapshot = await FirebaseFirestore.instance
-          .collection('user')
-          .doc(user.uid)
-          .get();
-
+      final userDataSnapshot =
+          await _firestore.collection('user').doc(user.uid).get();
       if (!userDataSnapshot.exists) {
         throw Exception("User data not found");
       }
-
       final userData = userDataSnapshot.data()!;
-      final queueSnapshot = await _firestore
+
+      // ดึงข้อมูลการจองทั้งหมดของผู้ใช้ในช่วงเวลาที่ต้องการ
+      final bookingsSnapshot = await _firestore
           .collection('user')
           .doc(user.uid)
           .collection("current queue")
+          .orderBy('timestamp', descending: true) // เรียงตามเวลาการจอง
           .get();
 
-      if (queueSnapshot.docs.isEmpty) {
-        await _firestore
-            .collection('Queue')
-            .doc("Restaurants01")
-            .collection("Current_Queue")
-            .add({
-          'guestCount': _guestCount,
-          'timestamp': now,
-          'userId': user.uid,
-          'username': userData['username'],
-          'queueNumber': _currentQueueNumber,
-        });
-        await _firestore
-            .collection('user')
-            .doc(user.uid)
-            .collection('current queue')
-            .add({
-          'guestCount': _guestCount,
-          'timestamp': now,
-          'userId': user.uid,
-          'username': userData['username'],
-          'queueNumber': _currentQueueNumber,
-        });
+      // ตรวจสอบการจองซ้อนทับในช่วงเวลา 1 ชั่วโมงก่อนและหลัง
+      for (var booking in bookingsSnapshot.docs) {
+        final bookingTime = (booking['timestamp'] as Timestamp).toDate();
 
-        // Show SnackBar
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (ScaffoldMessenger.of(context).mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Reservation added to queue')),
-            );
-          }
-        });
+        // ตรวจสอบว่าเวลาที่ต้องการจองซ้อนทับกับการจองที่มีอยู่หรือไม่
+        final minTimeDifference = Duration(minutes: 60); // 1 ชั่วโมง
+        final beforeBooking = bookingTime.subtract(minTimeDifference);
+        final afterBooking = bookingTime.add(minTimeDifference);
 
-        // Close dialog and pop the current screen
-        Navigator.pop(context);
-      } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (ScaffoldMessenger.of(context).mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("คุณมีคิวของคุณอยู่เเล้ว")),
-            );
-          }
-        });
-      }
-    } catch (e) {
-      // Show SnackBar for failure
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (ScaffoldMessenger.of(context).mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to add reservation')),
-          );
+        // ถ้าการจองใหม่ซ้อนทับกับการจองที่มีอยู่
+        if (_selectedDateTime!.isBefore(afterBooking) &&
+            _selectedDateTime!.isAfter(beforeBooking)) {
+          throw Exception("Cannot book within 1 hour of the last booking");
         }
+      }
+
+      // บันทึกการจองใหม่
+      await _firestore
+          .collection('Queue')
+          .doc(widget.restaurantName)
+          .collection("Current_Queue")
+          .add({
+        'guestCount': _guestCount,
+        'timestamp': Timestamp.fromDate(_selectedDateTime!),
+        'userId': user.uid,
+        'username': userData['username'],
       });
+
+      await _firestore
+          .collection('user')
+          .doc(user.uid)
+          .collection('current queue')
+          .add({
+        'guestCount': _guestCount,
+        'timestamp': Timestamp.fromDate(_selectedDateTime!),
+        'userId': user.uid,
+        'username': userData['username'],
+        'restaurantName': widget.restaurantName,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reservation added to queue')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add reservation: ${e.toString()}')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Replace this with your restaurant avatar image URL
-    String restaurantImageUrl =
-        'https://static.vecteezy.com/vite/assets/photo-masthead-375-b8ae1548.webp';
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restaurant Queue Reservation'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              const SizedBox(height: 20.0),
-              CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(restaurantImageUrl),
-              ),
-              const SizedBox(height: 25),
-              Text(
-                '',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+              DropdownButtonFormField<int>(
+                decoration: const InputDecoration(
+                  labelText: 'Guest Count',
+                  border: OutlineInputBorder(),
                 ),
+                value: _guestCount,
+                onChanged: (value) {
+                  setState(() {
+                    _guestCount = value;
+                  });
+                },
+                items: List.generate(10, (index) {
+                  int guests = index + 1;
+                  return DropdownMenuItem<int>(
+                    value: guests,
+                    child: Text('$guests Guests'),
+                  );
+                }),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select the number of guests';
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(height: 50),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        labelText: 'Guest Count',
-                        border: OutlineInputBorder(),
-                      ),
-                      value: _guestCount,
-                      onChanged: (value) {
-                        setState(() {
-                          _guestCount = value;
-                        });
-                      },
-                      items: List.generate(10, (index) {
-                        int guests = index + 1;
-                        return DropdownMenuItem<int>(
-                          value: guests,
-                          child: Text('$guests Guests'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(Duration(days: 30)),
+                  );
+                  if (picked != null) {
+                    final TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      setState(() {
+                        _selectedDateTime = DateTime(
+                          picked.year,
+                          picked.month,
+                          picked.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
                         );
-                      }),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please select the number of guests';
+                      });
+                    }
+                  }
+                },
+                child: Text(_selectedDateTime == null
+                    ? 'Select Date & Time'
+                    : 'Selected: ${_selectedDateTime.toString()}'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          _addToQueue().then((_) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          });
                         }
-                        return null;
                       },
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _showConfirmationDialog(
-                                  'reserve', () {}, restaurantImageUrl);
-                            }
-                          },
-                          child: const Text('จองคิว'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(),
-                          child: const Text('Cancel'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                child: const Text('Reserve'),
               ),
             ],
           ),

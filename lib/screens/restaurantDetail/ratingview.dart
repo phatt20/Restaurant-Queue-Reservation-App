@@ -9,12 +9,13 @@ class Ratingview extends StatelessWidget {
   final AnimationController animationController;
   final Restaurants restData;
   final FoodDtail fooddata;
-  const Ratingview({
-    super.key,
-    required this.restData,
-    required this.animationController,
-    required this.fooddata,
-  });
+  final String name;
+  const Ratingview(
+      {super.key,
+      required this.restData,
+      required this.animationController,
+      required this.fooddata,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +122,7 @@ class Ratingview extends StatelessWidget {
             animationController: animationController,
             animation: animationController,
             click: () {},
+            name: name,
             textColor: Colors.black),
         // แสดงข้อมูลรายการอาหาร
         CategoriuptodownSinggle(
