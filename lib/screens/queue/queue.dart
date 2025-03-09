@@ -90,6 +90,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
         'queueNumber': queueNumber,
         'date': selectedDate.toString(),
         "resName": widget.restaurantName,
+        "tableNum": tableNumber,
         'status': false,
       });
 
@@ -107,6 +108,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
         'queueNumber': queueNumber,
         'date': selectedDate.toString(),
         "resName": widget.restaurantName,
+        "tableNum": tableNumber,
         'status': false,
       });
 
@@ -120,7 +122,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
     }
   }
 
-  // ฟังก์ชันเลือกวันที่
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
       context: context,
@@ -136,15 +137,33 @@ class _ReservationScreenState extends State<ReservationScreen> {
       );
 
       if (time != null) {
-        setState(() {
-          _selectedDateTime = DateTime(
-            selected.year,
-            selected.month,
-            selected.day,
-            time.hour,
-            time.minute,
+        final selectedDateTime = DateTime(
+          selected.year,
+          selected.month,
+          selected.day,
+          time.hour,
+          time.minute,
+        );
+
+        // กำหนดเวลาเปิดร้านและปิดร้าน
+        final openingTime = DateTime(selectedDateTime.year,
+            selectedDateTime.month, selectedDateTime.day, 8, 0); // 8:00 AM
+        final closingTime = DateTime(selectedDateTime.year,
+            selectedDateTime.month, selectedDateTime.day, 21, 0); // 9:00 PM
+
+        // ตรวจสอบว่าเวลาอยู่ระหว่างช่วงเวลาเปิดร้านหรือไม่
+        if (selectedDateTime.isBefore(openingTime) ||
+            selectedDateTime.isAfter(closingTime)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                    'The restaurant is only open between 8:00 AM and 9:00 PM.')),
           );
-        });
+        } else {
+          setState(() {
+            _selectedDateTime = selectedDateTime;
+          });
+        }
       }
     }
   }

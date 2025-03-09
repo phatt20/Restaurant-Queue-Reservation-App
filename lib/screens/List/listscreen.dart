@@ -331,13 +331,14 @@ class _ListscreenState extends State<Listscreen> {
       // ใช้ข้อมูลร้านอาหารจาก `data`
       String restaurantName = data['resName'];
       int queueNumber = data['queueNumber'];
+      int tableNum = data["tableNum"];
 
       // อัปเดตสถานะการจองในคอลเล็กชัน 'Reservations' ของร้านอาหาร
       await _firestore
           .collection('restaurants')
           .doc(restaurantName) // ใช้ชื่อร้านจาก `resName`
           .collection('tables')
-          .doc('table$queueNumber') // ใช้หมายเลขคิวเป็นตัวระบุ
+          .doc('table$tableNum') // ใช้หมายเลขคิวเป็นตัวระบุ
           .collection('Reservations')
           .doc(reservationId) // ระบุตัว ID ของการจองที่ต้องการอัปเดต
           .update({
@@ -382,14 +383,15 @@ class _ListscreenState extends State<Listscreen> {
 
       // ลบการจองในร้านอาหารที่เกี่ยวข้อง
       String restaurantName = data['resName']; // ใช้ข้อมูลร้านอาหารจาก `data`
-      int queueNumber = data['queueNumber']; // ใช้หมายเลขคิวจากข้อมูล
+      int queueNumber = data['queueNumber'];
+      int tableNum = data["tableNum"];
 
       // ลบเอกสาร (document) ที่ตรงกับ reservationId ในคอลเล็กชัน Reservations ของร้านอาหาร
       await _firestore
           .collection('restaurants')
           .doc(restaurantName) // ใช้ชื่อร้านจาก `resName`
           .collection('tables')
-          .doc('table$queueNumber') // ใช้หมายเลขคิวเป็นตัวระบุ
+          .doc('table$tableNum') // ใช้หมายเลขคิวเป็นตัวระบุ
           .collection('Reservations')
           .doc(reservationId) // ระบุตัว ID ของการจองที่ต้องการลบ
           .delete();
