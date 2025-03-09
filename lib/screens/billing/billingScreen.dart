@@ -5,13 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class BillScreen extends StatelessWidget {
   const BillScreen({super.key});
 
-  // ดึงข้อมูลประวัติการจองจาก Firestore โดยใช้ userId จาก Firebase Authentication
-  Stream<List<Map<String, dynamic>>> _getCancelledBookings(String userId) {
+  // ดึงข้อมูลประวัติการจองทั้งหมดจาก Firestore โดยใช้ userId จาก Firebase Authentication
+  Stream<List<Map<String, dynamic>>> _getAllBookings(String userId) {
     return FirebaseFirestore.instance
         .collection('user') // คอลเลกชันผู้ใช้
         .doc(userId) // ใช้ userId ของผู้ใช้
         .collection('history') // คอลเลกชันประวัติการจอง
-        .where('status', isEqualTo: 'cancelled') // กรองเฉพาะการจองที่ยกเลิก
         .snapshots()
         .map((querySnapshot) {
       if (querySnapshot.docs.isEmpty) {
@@ -24,7 +23,7 @@ class BillScreen extends StatelessWidget {
           'timestamp': doc['timestamp']?.toDate() ??
               DateTime.now(), // ค่า default หากไม่มี timestamp
           'userId': doc['userId'] ?? '', // ค่า default หากไม่มี userId
-          'restaurantName': doc['restaurantName'] ??
+          'resName': doc['resName'] ??
               'ไม่ทราบชื่อร้าน', // ค่า default หากไม่มี restaurantName
           'status': doc['status'] ?? 'failed', // ตรวจสอบสถานะการจอง
         };
@@ -57,7 +56,8 @@ class BillScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _getCancelledBookings(user.uid),
+          // ใช้ StreamBuilder เพื่อรับข้อมูลสดจาก Firestore
+          stream: _getAllBookings(user.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -65,7 +65,7 @@ class BillScreen extends StatelessWidget {
               debugPrint("Error: ${snapshot.error}");
               return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('ไม่มีประวัติการจองที่ยกเลิก'));
+              return const Center(child: Text('ไม่มีประวัติการจอง'));
             } else {
               final bookings = snapshot.data!;
               return ListView.builder(
@@ -93,7 +93,7 @@ class BillScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Text(
-                                  'ร้าน: ${booking['restaurantName']}',
+                                  'ร้าน: ${booking['resName']}',
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -105,7 +105,9 @@ class BillScreen extends StatelessWidget {
                                   booking['status'] == 'failed'
                                       ? Icons.cancel
                                       : Icons.check_circle,
-                                  color: Colors.red,
+                                  color: booking['status'] == 'failed'
+                                      ? Colors.red
+                                      : Colors.green,
                                 ),
                               ],
                             ),

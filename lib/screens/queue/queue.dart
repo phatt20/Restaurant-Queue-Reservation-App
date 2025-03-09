@@ -1,7 +1,6 @@
-import 'package:chat/models/restaurants.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class ReservationScreen extends StatefulWidget {
   final String restaurantName;
@@ -18,6 +17,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
   int _selectedTable = 1; // Default to table 1
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<String> _reservedTimes = []; // List to store reserved times
+
   Future<void> _addToQueue() async {
     try {
       if (_selectedDateTime == null || _guestCount == null) {
@@ -60,14 +61,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
       for (var doc in sortedDocs) {
         final existingReservationTime =
             (doc['timestamp'] as Timestamp).toDate();
-
-        if (_selectedDateTime!
-                .isBefore(existingReservationTime.add(Duration(hours: 1))) &&
-            _selectedDateTime!.isAfter(
-                existingReservationTime.subtract(Duration(hours: 1)))) {
-          throw Exception(
-              "This time is already reserved. Please choose another time.");
-        }
+        final formattedTime =
+            "${existingReservationTime.hour}:${existingReservationTime.minute}";
+        _reservedTimes.add(formattedTime); // Add reserved time to list
       }
 
       // Continue with adding the reservation to the queue...
@@ -162,10 +158,47 @@ class _ReservationScreenState extends State<ReservationScreen> {
         } else {
           setState(() {
             _selectedDateTime = selectedDateTime;
+            _reservedTimes
+                .clear(); // Clear reserved times list when selecting a new date
+            _fetchReservedTimes(); // Fetch the reserved times for the selected date
           });
         }
       }
     }
+  }
+
+  Future<void> _fetchReservedTimes() async {
+    if (_selectedDateTime == null) return;
+
+    final selectedDate = DateTime(_selectedDateTime!.year,
+        _selectedDateTime!.month, _selectedDateTime!.day);
+
+    final tableReservationsSnapshot = await _firestore
+        .collection('restaurants')
+        .doc(widget.restaurantName)
+        .collection('tables')
+        .doc('table$_selectedTable')
+        .collection('Reservations')
+        .where('date', isEqualTo: selectedDate.toString())
+        .get();
+
+    List<QueryDocumentSnapshot> sortedDocs = tableReservationsSnapshot.docs;
+    sortedDocs.sort((a, b) {
+      final timeA = (a['timestamp'] as Timestamp).toDate();
+      final timeB = (b['timestamp'] as Timestamp).toDate();
+      return timeA.compareTo(timeB); // Sort in ascending order of timestamp
+    });
+
+    setState(() {
+      _reservedTimes.clear();
+      for (var doc in sortedDocs) {
+        final existingReservationTime =
+            (doc['timestamp'] as Timestamp).toDate();
+        final formattedTime =
+            "${existingReservationTime.hour}:${existingReservationTime.minute}";
+        _reservedTimes.add(formattedTime); // Add reserved time to list
+      }
+    });
   }
 
   @override
@@ -205,6 +238,19 @@ class _ReservationScreenState extends State<ReservationScreen> {
               ),
             ),
             SizedBox(height: 16),
+
+            // แสดงเวลาที่ถูกจอง
+            Expanded(
+              child: ListView.builder(
+                itemCount: _reservedTimes.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                        'วันนี้มีการจองเเล้วในเวลา ${_reservedTimes[index]}'),
+                  );
+                },
+              ),
+            ),
 
             // ส่วนของการเลือกจำนวนผู้เข้าร่วม
             TextField(
