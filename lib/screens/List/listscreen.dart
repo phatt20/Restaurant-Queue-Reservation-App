@@ -309,10 +309,9 @@ class _ListscreenState extends State<Listscreen> {
           .collection("current queue")
           .doc(reservationId)
           .update({
-        'status': 'เช็คอินเเล้ว', // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
+        'status': true, // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
       });
 
-      // ย้ายข้อมูลไปยังประวัติการจอง
       await _firestore
           .collection('user')
           .doc(user.uid)
@@ -320,7 +319,15 @@ class _ListscreenState extends State<Listscreen> {
           .doc(reservationId)
           .set(data);
 
-      // ลบข้อมูลการจองจากคิวปัจจุบัน
+      await _firestore
+          .collection('user')
+          .doc(user.uid)
+          .collection("history")
+          .doc(reservationId)
+          .update({
+        'status': true, // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
+      });
+
       await _firestore
           .collection('user')
           .doc(user.uid)
@@ -342,8 +349,38 @@ class _ListscreenState extends State<Listscreen> {
           .collection('Reservations')
           .doc(reservationId) // ระบุตัว ID ของการจองที่ต้องการอัปเดต
           .update({
-        'status': 'เช็คอินเเล้ว', // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
+        'status': true,
+        // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
       });
+      await _firestore
+          .collection('restaurants')
+          .doc(restaurantName)
+          .collection('tables')
+          .doc('table$tableNum')
+          .collection('histrory')
+          .doc(reservationId)
+          .set(data);
+
+      await _firestore
+          .collection('restaurants')
+          .doc(restaurantName)
+          .collection('tables')
+          .doc('table$tableNum')
+          .collection('histrory')
+          .doc(reservationId)
+          .update({
+        'status': true,
+        // เปลี่ยนสถานะเป็น 'เช็คอินเเล้ว'
+      });
+
+      await _firestore
+          .collection('restaurants')
+          .doc(restaurantName) // ใช้ชื่อร้านจาก `resName`
+          .collection('tables')
+          .doc('table$tableNum') // ใช้หมายเลขคิวเป็นตัวระบุ
+          .collection('Reservations')
+          .doc(reservationId)
+          .delete();
 
       // แสดงข้อความ SnackBar เมื่อสำเร็จ
       ScaffoldMessenger.of(context).showSnackBar(

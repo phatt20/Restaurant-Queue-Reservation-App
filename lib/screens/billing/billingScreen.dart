@@ -102,12 +102,13 @@ class BillScreen extends StatelessWidget {
                                 ),
                                 const Spacer(),
                                 Icon(
-                                  booking['status'] == 'failed'
-                                      ? Icons.cancel
-                                      : Icons.check_circle,
-                                  color: booking['status'] == 'failed'
-                                      ? Colors.red
-                                      : Colors.green,
+                                  // ตรวจสอบ status ซึ่งเป็น true/false
+                                  booking['status'] == true
+                                      ? Icons.check_circle
+                                      : Icons.cancel,
+                                  color: booking['status'] == true
+                                      ? Colors.green
+                                      : Colors.red,
                                 ),
                               ],
                             ),

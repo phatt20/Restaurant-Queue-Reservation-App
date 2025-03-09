@@ -229,14 +229,25 @@ class _ReservationScreenState extends State<ReservationScreen> {
             SizedBox(height: 16),
 
             // ส่วนของการเลือกวันที่และเวลา
-            ElevatedButton(
-              onPressed: () => _selectDateTime(context),
-              child: Text(
-                _selectedDateTime == null
-                    ? 'Select Date & Time'
-                    : 'Selected: ${_selectedDateTime!.toLocal()}',
-              ),
+            // ส่วนของการเลือกวันที่และเวลา
+            Column(
+              children: [
+                Text(
+                  'The restaurant is open from 8:00 AM to 9:00 PM.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => _selectDateTime(context),
+                  child: Text(
+                    _selectedDateTime == null
+                        ? 'Select Date & Time'
+                        : 'Selected: ${_selectedDateTime!.toLocal()}',
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 16),
 
             // แสดงเวลาที่ถูกจอง
