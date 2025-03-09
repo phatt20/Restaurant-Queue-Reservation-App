@@ -19,7 +19,6 @@ class App extends StatelessWidget {
   const App({super.key});
 
   @override
-
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Restaurants',
@@ -56,9 +55,7 @@ class App extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) { 
-            
-
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
           }
           if (snapshot.hasData) {

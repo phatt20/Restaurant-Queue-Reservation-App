@@ -1,20 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat/models/restaurants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class QueueTest extends StatefulWidget {
-  final String restaurantName; // รับชื่อร้านเป็น constructor parameter
-  const QueueTest({Key? key, required this.restaurantName}) : super(key: key);
+class ReservationScreen extends StatefulWidget {
+  final String restaurantName;
+
+  ReservationScreen({required this.restaurantName});
 
   @override
-  State<QueueTest> createState() => _QueueState();
+  _ReservationScreenState createState() => _ReservationScreenState();
 }
 
-class _QueueState extends State<QueueTest> {
-  final _formKey = GlobalKey<FormState>();
-  int? _guestCount;
+class _ReservationScreenState extends State<ReservationScreen> {
   DateTime? _selectedDateTime;
-  bool _isLoading = false;
+  int? _guestCount;
+  int _selectedTable = 1; // Default to table 1
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<void> _addToQueue() async {
@@ -31,52 +32,82 @@ class _QueueState extends State<QueueTest> {
       }
       final userData = userDataSnapshot.data()!;
 
-      // ดึงข้อมูลการจองทั้งหมดของผู้ใช้ในช่วงเวลาที่ต้องการ
-      final bookingsSnapshot = await _firestore
-          .collection('user')
-          .doc(user.uid)
-          .collection("current queue")
-          .orderBy('timestamp', descending: true) // เรียงตามเวลาการจอง
+      // ดึงวันที่ของการจอง
+      final selectedDate = DateTime(_selectedDateTime!.year,
+          _selectedDateTime!.month, _selectedDateTime!.day);
+
+      final tableNumber = _selectedTable;
+
+      // Query documents by 'date' only (without 'timestamp' for now)
+      final tableReservationsSnapshot = await _firestore
+          .collection('restaurants')
+          .doc(widget.restaurantName)
+          .collection('tables')
+          .doc('table$tableNumber')
+          .collection('Reservations')
+          .where('date', isEqualTo: selectedDate.toString())
           .get();
 
-      // ตรวจสอบการจองซ้อนทับในช่วงเวลา 1 ชั่วโมงก่อนและหลัง
-      for (var booking in bookingsSnapshot.docs) {
-        final bookingTime = (booking['timestamp'] as Timestamp).toDate();
+      // Sort the documents by 'timestamp' after fetching
+      List<QueryDocumentSnapshot> sortedDocs = tableReservationsSnapshot.docs;
+      sortedDocs.sort((a, b) {
+        final timeA = (a['timestamp'] as Timestamp).toDate();
+        final timeB = (b['timestamp'] as Timestamp).toDate();
+        return timeA.compareTo(timeB); // Sort in ascending order of timestamp
+      });
 
-        // ตรวจสอบว่าเวลาที่ต้องการจองซ้อนทับกับการจองที่มีอยู่หรือไม่
-        final minTimeDifference = Duration(minutes: 60); // 1 ชั่วโมง
-        final beforeBooking = bookingTime.subtract(minTimeDifference);
-        final afterBooking = bookingTime.add(minTimeDifference);
+      // Now check for conflicts
+      for (var doc in sortedDocs) {
+        final existingReservationTime =
+            (doc['timestamp'] as Timestamp).toDate();
 
-        // ถ้าการจองใหม่ซ้อนทับกับการจองที่มีอยู่
-        if (_selectedDateTime!.isBefore(afterBooking) &&
-            _selectedDateTime!.isAfter(beforeBooking)) {
-          throw Exception("Cannot book within 1 hour of the last booking");
+        if (_selectedDateTime!
+                .isBefore(existingReservationTime.add(Duration(hours: 1))) &&
+            _selectedDateTime!.isAfter(
+                existingReservationTime.subtract(Duration(hours: 1)))) {
+          throw Exception(
+              "This time is already reserved. Please choose another time.");
         }
       }
 
-      // บันทึกการจองใหม่
+      // Continue with adding the reservation to the queue...
+      final queueNumber = sortedDocs.length + 1;
+      final reservationId = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Add the new reservation
       await _firestore
-          .collection('Queue')
+          .collection('restaurants')
           .doc(widget.restaurantName)
-          .collection("Current_Queue")
-          .add({
+          .collection('tables')
+          .doc('table$tableNumber')
+          .collection('Reservations')
+          .doc(reservationId)
+          .set({
         'guestCount': _guestCount,
         'timestamp': Timestamp.fromDate(_selectedDateTime!),
         'userId': user.uid,
         'username': userData['username'],
+        'queueNumber': queueNumber,
+        'date': selectedDate.toString(),
+        "resName": widget.restaurantName,
+        'status': false,
       });
 
+      // Add the reservation to the user's current queue as well
       await _firestore
           .collection('user')
           .doc(user.uid)
-          .collection('current queue')
-          .add({
+          .collection("current queue")
+          .doc(reservationId)
+          .set({
         'guestCount': _guestCount,
         'timestamp': Timestamp.fromDate(_selectedDateTime!),
         'userId': user.uid,
         'username': userData['username'],
-        'restaurantName': widget.restaurantName,
+        'queueNumber': queueNumber,
+        'date': selectedDate.toString(),
+        "resName": widget.restaurantName,
+        'status': false,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -89,94 +120,91 @@ class _QueueState extends State<QueueTest> {
     }
   }
 
+  // ฟังก์ชันเลือกวันที่
+  Future<void> _selectDateTime(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (selected != null) {
+      final TimeOfDay? time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+      );
+
+      if (time != null) {
+        setState(() {
+          _selectedDateTime = DateTime(
+            selected.year,
+            selected.month,
+            selected.day,
+            time.hour,
+            time.minute,
+          );
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Restaurant Queue Reservation'),
+        title: Text('Make a Reservation'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              DropdownButtonFormField<int>(
-                decoration: const InputDecoration(
-                  labelText: 'Guest Count',
-                  border: OutlineInputBorder(),
-                ),
-                value: _guestCount,
-                onChanged: (value) {
-                  setState(() {
-                    _guestCount = value;
-                  });
-                },
-                items: List.generate(10, (index) {
-                  int guests = index + 1;
-                  return DropdownMenuItem<int>(
-                    value: guests,
-                    child: Text('$guests Guests'),
-                  );
-                }),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select the number of guests';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  final DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(Duration(days: 30)),
-                  );
-                  if (picked != null) {
-                    final TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (pickedTime != null) {
-                      setState(() {
-                        _selectedDateTime = DateTime(
-                          picked.year,
-                          picked.month,
-                          picked.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
-                        );
-                      });
-                    }
-                  }
-                },
-                child: Text(_selectedDateTime == null
+        child: Column(
+          children: [
+            // ส่วนของการเลือกโต๊ะ
+            DropdownButton<int>(
+              value: _selectedTable,
+              onChanged: (int? newValue) {
+                setState(() {
+                  _selectedTable = newValue!;
+                });
+              },
+              items: <int>[1, 2, 3].map<DropdownMenuItem<int>>((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text('Table $value'),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 16),
+
+            // ส่วนของการเลือกวันที่และเวลา
+            ElevatedButton(
+              onPressed: () => _selectDateTime(context),
+              child: Text(
+                _selectedDateTime == null
                     ? 'Select Date & Time'
-                    : 'Selected: ${_selectedDateTime.toString()}'),
+                    : 'Selected: ${_selectedDateTime!.toLocal()}',
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _isLoading
-                    ? null
-                    : () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          _addToQueue().then((_) {
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          });
-                        }
-                      },
-                child: const Text('Reserve'),
-              ),
-            ],
-          ),
+            ),
+            SizedBox(height: 16),
+
+            // ส่วนของการเลือกจำนวนผู้เข้าร่วม
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Guest Count'),
+              onChanged: (value) {
+                setState(() {
+                  _guestCount = int.tryParse(value);
+                });
+              },
+            ),
+            SizedBox(height: 16),
+
+            // ปุ่มจองโต๊ะ
+            ElevatedButton(
+              onPressed: _addToQueue,
+              child: Text('Book Table'),
+            ),
+          ],
         ),
       ),
     );

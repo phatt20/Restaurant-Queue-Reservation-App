@@ -276,7 +276,7 @@ class _RestaurantsdetailState extends State<Restaurantsdetail>
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          QueueTest(
+                                                          ReservationScreen(
                                                         restaurantName:
                                                             widget.name,
                                                       ),

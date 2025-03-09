@@ -8,9 +8,10 @@ class BillScreen extends StatelessWidget {
   // ดึงข้อมูลประวัติการจองจาก Firestore โดยใช้ userId จาก Firebase Authentication
   Stream<List<Map<String, dynamic>>> _getCancelledBookings(String userId) {
     return FirebaseFirestore.instance
-        .collection('user')
-        .doc(userId)
-        .collection('history')
+        .collection('user') // คอลเลกชันผู้ใช้
+        .doc(userId) // ใช้ userId ของผู้ใช้
+        .collection('history') // คอลเลกชันประวัติการจอง
+        .where('status', isEqualTo: 'cancelled') // กรองเฉพาะการจองที่ยกเลิก
         .snapshots()
         .map((querySnapshot) {
       if (querySnapshot.docs.isEmpty) {
@@ -18,13 +19,14 @@ class BillScreen extends StatelessWidget {
       }
       return querySnapshot.docs.map((doc) {
         return {
-          'guestCount': doc['guestCount'] ?? 0, // ตรวจสอบค่า default
+          'guestCount':
+              doc['guestCount'] ?? 0, // ค่า default หากไม่มี guestCount
           'timestamp': doc['timestamp']?.toDate() ??
-              DateTime.now(), // ตรวจสอบค่า default
-          'userId': doc['userId'] ?? '', // ตรวจสอบค่า default
-          'restaurantName':
-              doc['restaurantName'] ?? 'ไม่ทราบชื่อร้าน', // ตรวจสอบค่า default
-          'status': 'failed', // Mock สถานะ "failed" สำหรับทุกการจอง
+              DateTime.now(), // ค่า default หากไม่มี timestamp
+          'userId': doc['userId'] ?? '', // ค่า default หากไม่มี userId
+          'restaurantName': doc['restaurantName'] ??
+              'ไม่ทราบชื่อร้าน', // ค่า default หากไม่มี restaurantName
+          'status': doc['status'] ?? 'failed', // ตรวจสอบสถานะการจอง
         };
       }).toList();
     });
@@ -60,7 +62,7 @@ class BillScreen extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              debugPrint("Error: ${snapshot.error}"); // เพิ่มการพิมพ์ข้อผิดพลาด
+              debugPrint("Error: ${snapshot.error}");
               return const Center(child: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text('ไม่มีประวัติการจองที่ยกเลิก'));
